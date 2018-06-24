@@ -1,5 +1,9 @@
 package core
 
+import "regexp"
+
+var rxEmail = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+
 type EmailRegistrationForm struct {
 	Email     string `json:"email"`
 	Password  string `json:"password"`
@@ -8,7 +12,7 @@ type EmailRegistrationForm struct {
 
 func (erf *EmailRegistrationForm) Validation() []FormError {
 	var errorResponse = make([]FormError, 0)
-	if len(erf.Email) == 0 {
+	if len(erf.Email) == 0 || !rxEmail.MatchString(erf.Email){
 		errorResponse = append(errorResponse, FormError{Message: "Email is not correct", Name: "email"})
 	}
 
@@ -32,7 +36,7 @@ type ProfileForm struct {
 
 func (pf *ProfileForm) Validation() []FormError {
 	var errorResponse = make([]FormError, 0)
-	if len(pf.Email) == 0 {
+	if len(pf.Email) == 0 || !rxEmail.MatchString(pf.Email){
 		errorResponse = append(errorResponse, FormError{Message: "Email is not correct", Name: "email"})
 	}
 
