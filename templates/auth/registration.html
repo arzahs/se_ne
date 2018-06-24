@@ -1,0 +1,44 @@
+{{ define "content" }}
+<div class="text-center">
+    <div class="pt-md-5 form-signin">
+        <h1 class="h3 mb-3 font-weight-normal">Create Your Account</h1>
+        <div class="pt-md-3" id="typeRegistrationForm">
+            <a class="btn btn-lg btn-primary btn-block" href="/api/v1/user/google/">Use Google</a>
+            <button class="btn btn-lg btn-success btn-block" id="btnEmailRegistration">Use Email</button>
+            <a class="btn btn-lg btn-danger btn-block" href="/login/">Cancel</a>
+        </div>
+    </div>
+    <form class="form-signin pt-md-5 d-none" id="emailRegistrationForm" method="post">
+        <div class="email-registration-form">
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" name="email" class="form-control mb-3" placeholder="Email address" required autofocus>
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" name="password" class="form-control mb-3" placeholder="Password" required autofocus>
+            <label for="inputPassword1" class="sr-only">Password</label>
+            <input type="password" id="inputPassword1" name="password1" class="form-control" placeholder="Password confirmation" required autofocus>
+            <div class="pt-md-3">
+                <button class="btn btn-lg btn-success btn-block" type="submit">Register</button>
+                <a class="btn btn-lg btn-danger btn-block" href="/login/">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{{end}}
+{{ define "scripts" }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // use google registration
+        // use email registration
+        var btnEmailRegistration = document.getElementById("btnEmailRegistration");
+        btnEmailRegistration.addEventListener("click", function(event) {
+            PageController.RegistrationTypeChange(this, event)
+        });
+
+        // handle email registration
+        var emailRegistrationForm = document.getElementById("emailRegistrationForm");
+        emailRegistrationForm.addEventListener("submit", function (event) {
+            registrationFormController.submit(emailRegistrationForm, event)
+        });
+    });
+</script>
+{{end}}

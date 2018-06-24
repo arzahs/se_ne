@@ -1,0 +1,12 @@
+.form-signin{
+    max-width: 330px;
+    margin: auto;
+}
+
+.invalid-feedback {
+    display: block;
+}
+
+#mapContainer{
+    height: 100%;
+}

@@ -1,0 +1,6 @@
+package: se_ne
+import:
+- package: github.com/caarlos0/env
+  version: ^3.3.0
+- package: github.com/gorilla/mux
+  version: ^1.6.2

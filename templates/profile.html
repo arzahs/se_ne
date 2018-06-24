@@ -1,0 +1,80 @@
+{{ define "content" }}
+    <div class="row pt-md-5 py-md-5">
+        <div class="col-md">
+            {{ if .User.IsActive}}
+                <button id="btnEditProfile" class="float-right btn btn-success">Edit User</button>
+            {{ end }}
+            <h4>User Profile</h4>
+            <hr/>
+            <form id="formUserProfile" method="post">
+                <fieldset class="fieldset">
+                    <div class="form-group row">
+                        <label class="col-md-3">Email</label>
+                        <div class="col-md-9">
+                            {{ if .User.IsActive }}<div class="form-value">{{.User.Email}}</div>{{end}}
+                            <input id="email" name="email" class="form-control {{ if .User.IsActive}}d-none{{ end }}" value="{{.User.Email}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3">First Name</label>
+                        <div class="col-md-9">
+                        {{ if .User.IsActive}} <div class="form-value">{{.User.FirstName}}</div> {{ end }}
+                            <input id="name" name="first_name" class="form-control {{ if .User.IsActive}}d-none{{ end }}" value="{{.User.FirstName}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3">Last Name</label>
+                        <div class="col-md-9">
+                            {{ if .User.IsActive}} <div class="form-value">{{.User.LastName}} </div> {{ end }}
+                            <input id="inputFamilyName" name="last_name" class="form-control {{ if .User.IsActive}}d-none{{ end }}" value="{{.User.LastName}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3">Address</label>
+                        <div class="col-md-9">
+                        {{ if  .User.IsActive}}<div class="form-value">{{.User.Address}}</div> {{ end }}
+                            <input id="inputAddress" name="address" class="form-control {{ if .User.IsActive}}d-none{{ end }}" value="{{.User.Address}}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3">Phone</label>
+                        <div class="col-md-9">
+                            {{ if  .User.IsActive}} <div class="form-value">{{.User.Telephone}}</div> {{ end }}
+                            <input id="inputTelephone" name="telephone" class="form-control {{ if .User.IsActive}}d-none{{ end }}" value="{{.User.Telephone}}">
+                        </div>
+                    </div>
+                </fieldset>
+                <button type="submit" form="formUserProfile" id="btnSaveProfile" class="btn btn-success {{ if .User.IsActive}}d-none{{ end }}"><i class="fa fa-save"></i> Save</button>
+            </form>
+        </div>
+        <div class="col-md">
+            <h4>Map</h4>
+            <hr/>
+            <div id="mapContainer">
+
+            </div>
+        </div>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{.GoogleAPIKey}}&libraries=places"></script>
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnEditProfile = document.getElementById("btnEditProfile");
+        if (btnEditProfile) {
+            btnEditProfile.addEventListener("click", function(event){
+                PageController.EditProfile(btnEditProfile, event)
+            });
+        }
+        var formUserProfile = document.getElementById("formUserProfile");
+        formUserProfile.addEventListener("submit", function (event) {
+            profileFormController.submit(formUserProfile, event);
+        });
+
+        GoogleMapController.initAutocomplete();
+        GoogleMapController.initMap();
+    });
+
+</script>
+{{ end }}

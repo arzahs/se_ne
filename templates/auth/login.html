@@ -1,0 +1,27 @@
+{{ define "content" }}
+        <div class="text-center">
+            <form class="form-signin pt-md-5" id="loginForm" method="post">
+                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <label for="inputEmail" class="sr-only">Email address</label>
+                <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Email address" required autofocus>
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+                <div class="pt-md-3">
+                    <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
+                    <a class="btn btn-lg btn-primary btn-block" href="/api/v1/user/google/">Sign in with Google</a>
+                    <a class="btn btn-lg btn-warning btn-block" href="/registration/">Sign up</a>
+                    <a href="/reset/">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
+{{end}}
+{{ define "scripts" }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var loginForm = document.getElementById("loginForm");
+        loginForm.addEventListener("submit", function(event){
+            loginFormController.submit(loginForm, event)
+        });
+    });
+</script>
+{{ end }}
