@@ -5,34 +5,25 @@ import (
 	"net/http"
 )
 
-//
-//const(
-//	HOME string = "profile.html"
-//	LOGIN string = "login.html"
-//	REGISTRATION string = "registration.html"
-//	RESET_PASSWORD string = "forgot_password.html"
-//	NEW_PASSWORD string = "new_password.html"
-//)
-
-type View struct{
-	templates map[string]*template.Template
-	pathToTemplate string
+type View struct {
+	templates       map[string]*template.Template
+	pathToTemplates string
 }
 
-func NewView(pathToTemplate string) *View{
+func NewView(pathToTemplates string) *View {
 	templates := make(map[string]*template.Template)
-	templates["profile"] =  template.Must(template.ParseFiles("./templates/profile.html", "./templates/base.html"))
-	templates["login"] =  template.Must(template.ParseFiles("./templates/auth/login.html", "./templates/base.html"))
-	templates["registration"] =  template.Must(template.ParseFiles("./templates/auth/registration.html", "./templates/base.html"))
-	templates["reset"] =  template.Must(template.ParseFiles("./templates/auth/reset_password.html", "./templates/base.html"))
-	templates["new_password"] =  template.Must(template.ParseFiles("./templates/auth/new_password.html", "./templates/base.html"))
+	templates["profile"] = template.Must(template.ParseFiles(pathToTemplates+"profile.html", pathToTemplates+"base.html"))
+	templates["login"] = template.Must(template.ParseFiles(pathToTemplates+"auth/login.html", pathToTemplates+"base.html"))
+	templates["registration"] = template.Must(template.ParseFiles(pathToTemplates+"auth/registration.html", pathToTemplates+"base.html"))
+	templates["reset"] = template.Must(template.ParseFiles(pathToTemplates+"auth/reset_password.html", pathToTemplates+"base.html"))
+	templates["new_password"] = template.Must(template.ParseFiles(pathToTemplates+"auth/new_password.html", pathToTemplates+"base.html"))
 	return &View{
-		templates: templates,
-		pathToTemplate: pathToTemplate,
+		templates:       templates,
+		pathToTemplates: pathToTemplates,
 	}
 }
 
-func (view *View) Render(w http.ResponseWriter, templateName string, context interface{}){
+func (view *View) Render(w http.ResponseWriter, templateName string, context interface{}) {
 	tmpl, ok := view.templates[templateName]
 	if !ok {
 		http.Error(w, "The template does not exist.", http.StatusInternalServerError)
@@ -42,4 +33,3 @@ func (view *View) Render(w http.ResponseWriter, templateName string, context int
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
-

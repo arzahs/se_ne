@@ -1,26 +1,26 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
-	"net/http"
-	"log"
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+	"log"
+	"net/http"
 	"se_ne/controllers"
 	"se_ne/core"
 	"se_ne/middlewares"
 	"se_ne/models"
-	"github.com/gorilla/sessions"
 )
 
-func main(){
+func main() {
 	// init config application
 	cfg, err := core.NewConfig()
-	if err != nil{
+	if err != nil {
 		log.Printf("application run error = %s", err)
 		return
 	}
 	err = models.InitModels(cfg.DB)
-	if err != nil{
+	if err != nil {
 		log.Printf("db error = %s", err)
 		return
 	}
@@ -29,7 +29,7 @@ func main(){
 	view := core.NewView(cfg.TemplatePath)
 	sessionStore := sessions.NewCookieStore([]byte(cfg.SecretKey))
 	accessMwr := middlewares.Middleware{Session: sessionStore}
-	baseCtrl := controllers.Controller{Cfg: cfg, View:view, Session: sessionStore}
+	baseCtrl := controllers.Controller{Cfg: cfg, View: view, Session: sessionStore}
 	pageCtrl := controllers.PageController{Controller: baseCtrl}
 	userCtrl := controllers.UserController{Controller: baseCtrl}
 	authCtrl := controllers.SessionController{Controller: baseCtrl}
@@ -60,11 +60,11 @@ func main(){
 	router.HandleFunc("/api/v1/session/", accessMwr.MustAuth(authCtrl.Delete)).Methods("DELETE")
 	router.HandleFunc("/api/v1/session/google/", accessMwr.MustAnon(authCtrl.GoogleGoogleCallback)).Methods("GET")
 	// init staticfiles router
-	fs := http.FileServer(http.Dir("./assets/"))
+	fs := http.FileServer(http.Dir(cfg.StaticPath))
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 	// start server
 	err = http.ListenAndServe(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port), router)
-	if err != nil{
+	if err != nil {
 		log.Println(err.Error())
 	}
 }

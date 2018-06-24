@@ -1,20 +1,20 @@
 package db
 
 import (
-	"github.com/jmoiron/sqlx"
-	_ "github.com/go-sql-driver/mysql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
-type Config struct{
-	DatabaseHost string `env:"APP_DB_HOST,required"`
-	DatabasePort int    `env:"APP_DB_PORT,default=3306"`
-	DatabaseName string `env:"APP_DB_NAME,required"`
+type Config struct {
+	DatabaseHost     string `env:"APP_DB_HOST,required"`
+	DatabasePort     int    `env:"APP_DB_PORT,default=3306"`
+	DatabaseName     string `env:"APP_DB_NAME,required"`
 	DatabaseUsername string `env:"APP_DB_USERNAME,required"`
 	DatabasePassword string `env:"APP_DB_PASSWORD,required"`
 }
 
-func (c *Config) GetSourceName() string{
+func (c *Config) GetSourceName() string {
 	return fmt.Sprintf(
 		"%s:%s@(%s:%d)/%s?multiStatements=true",
 		c.DatabaseUsername,
@@ -24,20 +24,19 @@ func (c *Config) GetSourceName() string{
 		c.DatabaseName)
 }
 
-
-type Storage struct{
+type Storage struct {
 	DB *sqlx.DB
 }
 
-func NewStorage(cfg Config) (*Storage, error){
+func NewStorage(cfg Config) (*Storage, error) {
 	connPool, err := sqlx.Connect(
 		"mysql", cfg.GetSourceName())
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 
 	err = connPool.Ping()
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 
@@ -47,7 +46,7 @@ func NewStorage(cfg Config) (*Storage, error){
 	}, err
 }
 
-func InstallScheme(db *sqlx.DB) error{
+func InstallScheme(db *sqlx.DB) error {
 	scheme := `
 CREATE TABLE IF NOT EXISTS user (
 	id int NOT NULL AUTO_INCREMENT,

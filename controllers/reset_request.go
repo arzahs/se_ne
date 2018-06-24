@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
-	"se_ne/core"
 	"net/http"
+	"se_ne/core"
 	"se_ne/models"
 )
 
@@ -12,25 +12,25 @@ type ResetRequestController struct {
 }
 
 // Generate request for password access
-func (rrc *ResetRequestController) Post(w http.ResponseWriter, r *http.Request){
+func (rrc *ResetRequestController) Post(w http.ResponseWriter, r *http.Request) {
 	var resetForm = struct {
-		Email string   `json:"email"`
+		Email string `json:"email"`
 	}{}
 	err := json.NewDecoder(r.Body).Decode(&resetForm)
-	if err != nil{
+	if err != nil {
 		core.Error(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	var errorResponse = make([]core.FormError, 0)
-	if len(resetForm.Email) == 0{
-		errorResponse = append(errorResponse, core.FormError{Message:"Email is not correct", Name: "email"})
+	if len(resetForm.Email) == 0 {
+		errorResponse = append(errorResponse, core.FormError{Message: "Email is not correct", Name: "email"})
 	}
 
 	user, err := models.GetUserByEmail(resetForm.Email)
-	if err != nil{
-		errorResponse = append(errorResponse, core.FormError{Message:"Email is not correct", Name: "email"})
+	if err != nil {
+		errorResponse = append(errorResponse, core.FormError{Message: "Email is not correct", Name: "email"})
 	}
-	if len(errorResponse) > 0{
+	if len(errorResponse) > 0 {
 		core.Data(w, struct {
 			Status    bool             `json:"status"`
 			ErrorList []core.FormError `json:"errors"`
@@ -38,18 +38,18 @@ func (rrc *ResetRequestController) Post(w http.ResponseWriter, r *http.Request){
 		return
 	}
 	token, err := core.GenerateToken()
-	if err != nil{
+	if err != nil {
 		core.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	rs := models.ResetRequest{UserId:user.Id, Token: *token}
+	rs := models.ResetRequest{UserId: user.Id, Token: *token}
 	err = rs.Insert()
-	if err != nil{
+	if err != nil {
 		core.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	err = core.SendResetPasswordToken(user.Email, *token, rrc.Cfg.Email)
-	if err != nil{
+	if err != nil {
 		core.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -60,10 +60,10 @@ func (rrc *ResetRequestController) Post(w http.ResponseWriter, r *http.Request){
 }
 
 // Set New Password
-func (rrc *ResetRequestController) Put(w http.ResponseWriter, r *http.Request){
+func (rrc *ResetRequestController) Put(w http.ResponseWriter, r *http.Request) {
 	newPasswordForm := core.NewPasswordForm{}
 	err := json.NewDecoder(r.Body).Decode(&newPasswordForm)
-	if err != nil{
+	if err != nil {
 		core.Error(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -71,9 +71,9 @@ func (rrc *ResetRequestController) Put(w http.ResponseWriter, r *http.Request){
 	var user = &models.User{}
 	errorResponse := newPasswordForm.Validation()
 	rps, err := models.GetResetRequestByToken(newPasswordForm.Token)
-	if err != nil{
-		errorResponse = append(errorResponse, core.FormError{Message:"Token is invalid", Name: "token"})
-	}else {
+	if err != nil {
+		errorResponse = append(errorResponse, core.FormError{Message: "Token is invalid", Name: "token"})
+	} else {
 		user, err = models.GetUserById(rps.UserId)
 		if err != nil {
 			errorResponse = append(errorResponse, core.FormError{Message: "Token is invalid", Name: "token"})
@@ -92,7 +92,7 @@ func (rrc *ResetRequestController) Put(w http.ResponseWriter, r *http.Request){
 		Password: hashedPassword,
 	}
 	err = userCredentials.Update()
-	if err != nil{
+	if err != nil {
 		core.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}

@@ -131,7 +131,7 @@ func (uc *UserController) Put(w http.ResponseWriter, r *http.Request) {
 			Status   bool   `json:"status"`
 			Redirect string `json:"redirect"`
 			Message  string `json:"message"`
-		}{true, "/", "Registration complete",})
+		}{true, "/", "Registration complete"})
 		return
 	}
 
@@ -150,7 +150,7 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 		}
 
 		session, err := uc.Session.Get(r, "user-session")
-		if err != nil{
+		if err != nil {
 			core.Error(w, http.StatusInternalServerError, "Session not found")
 			return
 		}
@@ -160,7 +160,7 @@ func (uc *UserController) Delete(w http.ResponseWriter, r *http.Request) {
 			delete(session.Values, "user-token")
 			session.Save(r, w)
 			err = user.Remove()
-			if err != nil{
+			if err != nil {
 				core.Error(w, http.StatusInternalServerError, err.Error())
 				return
 			}

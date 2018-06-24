@@ -1,9 +1,9 @@
 package core
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"bytes"
 	"net/http"
 )
 
@@ -11,12 +11,12 @@ type ErrorObj struct {
 	Code        int    `json:"code"`
 	Message     string `json:"message"`
 	Description string `json:"description"`
-	Status 		bool   `json:"status"`
+	Status      bool   `json:"status"`
 }
 
 type FormError struct {
 	Message string `json:"message"`
-	Name string `json:"name"`
+	Name    string `json:"name"`
 }
 
 func status(code int) string {
@@ -59,9 +59,8 @@ func Data(w http.ResponseWriter, data interface{}) {
 		buf := bytes.Buffer{}
 		json.HTMLEscape(&buf, resp)
 		w.Write(buf.Bytes())
-	}else{
+	} else {
 		w.WriteHeader(http.StatusOK)
 	}
 	return
 }
-
